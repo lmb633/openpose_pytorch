@@ -14,9 +14,10 @@ import mytransforms
 
 image_dir = 'data/train2017/'
 mask_dir = 'data/mask/'
-file_path = 'data/data_json/test/filelist.txt'
-mask_path = 'data/data_json/test/masklist.txt'
-json_path = 'data/data_json/test/train2017.json'
+file_path = 'data/data_json/train/filelist.txt'
+mask_path = 'data/data_json/train/masklist.txt'
+json_path = 'data/data_json/train/train2017.json'
+
 file_dir = [file_path, mask_path, json_path]
 transfor = mytransforms.Compose([mytransforms.RandomResized(),
                                  mytransforms.RandomRotate(40),
