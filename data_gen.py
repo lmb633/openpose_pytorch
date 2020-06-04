@@ -12,11 +12,11 @@ import matplotlib.pyplot as plt
 import cv2
 import mytransforms
 
-image_dir = 'data/val2017/'
+image_dir = 'data/train2017/'
 mask_dir = 'data/mask/'
-file_path = 'data_json/test/filelist.txt'
-mask_path = 'data_json/test/masklist.txt'
-json_path = 'data_json/test/train2017.json'
+file_path = 'data/data_json/test/filelist.txt'
+mask_path = 'data/data_json/test/masklist.txt'
+json_path = 'data/data_json/test/train2017.json'
 file_dir = [file_path, mask_path, json_path]
 transfor = mytransforms.Compose([mytransforms.RandomResized(),
                                  mytransforms.RandomRotate(40),
@@ -131,9 +131,9 @@ def generate_vector(vector, cnt, kpts, vec_pair, stride, theta):
                         vector[h][w][2 * i] = (vector[h][w][2 * i] * cnt[h][w][i] + bax) / (cnt[h][w][i] + 1)
                         vector[h][w][2 * i + 1] = (vector[h][w][2 * i + 1] * cnt[h][w][i] + bay) / (cnt[h][w][i] + 1)
                         cnt[h][w][i] += 1
-            # print(vector[min_h:max_h, min_w:max_w, 0])
-            # print(vector[min_h:max_h, min_w:max_w, 1])
-            # print(cnt[min_h:max_h, min_w:max_w, 0])
+                        # print(vector[min_h:max_h, min_w:max_w, 0])
+                        # print(vector[min_h:max_h, min_w:max_w, 1])
+                        # print(cnt[min_h:max_h, min_w:max_w, 0])
 
     return vector
 
