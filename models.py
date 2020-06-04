@@ -53,7 +53,7 @@ class OpenPose(nn.Module):
         return vec_out, heat_out
 
 
-def get_model(num_point=19, num_vector=6, num_stages=6, bn=False, pretrained=False):
+def get_model(num_point=19, num_vector=19, num_stages=6, bn=False, pretrained=False):
     net_dict = []
     block0 = [{'conv1_1': [3, 64, 3, 1, 1]}, {'conv1_2': [64, 64, 3, 1, 1]}, {'pool1': [2, 2, 0]},
               {'conv2_1': [64, 128, 3, 1, 1]}, {'conv2_2': [128, 128, 3, 1, 1]}, {'pool2': [2, 2, 0]},
@@ -108,5 +108,7 @@ if __name__ == '__main__':
     model = get_model(bn=True, pretrained=True)
     x = torch.zeros((1, 3, 64, 64))
     mask = torch.zeros((1, 1, 8, 8))
-    out = model(x, mask)
-    print(len(out))
+    out1,out2 = model(x, mask)
+    print(len(out1),len(out2))
+    print(out1[0].shape)
+    print(out2[0].shape)

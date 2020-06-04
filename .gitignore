@@ -5,3 +5,4 @@ __pycache__
 BEST_checkpoint.tar
 cocoapi/*
 test*
+data_json/*
