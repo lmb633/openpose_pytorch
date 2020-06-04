@@ -30,12 +30,11 @@ def train():
         start_epoch = checkpoint['epoch']
     optimizer = torch.optim.SGD(model.parameters(), lr=cfg.lr, momentum=cfg.mon, weight_decay=cfg.weight_decay)
     criterion1 = torch.nn.MSELoss().cuda()
-    criterion2 = torch.nn.MSELoss(reduction='none').cuda()
 
     log = SummaryWriter(log_dir='data/log', comment='openpose')
     for epoch in range(start_epoch, cfg.epoch):
         adjust_learning_rate(optimizer, epoch, cfg.lr_dec_epoch, cfg.lr_gamma)
-        loss = train_once(model, train_loader, optimizer, [criterion1, criterion2], epoch, log)
+        loss = train_once(model, train_loader, optimizer, criterion1, epoch, log)
         log.add_scalar('cpn_loss', loss, epoch)
         log.flush()
         if loss < best_loss:
