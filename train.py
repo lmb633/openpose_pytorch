@@ -58,6 +58,8 @@ def train_once(model, train_loader, optimizer, criterion, epoch, log):
     for i, (inputs, heatmap, vecmap, mask) in enumerate(train_loader):
         inputs = inputs.cuda()
         mask = mask.cuda()
+        heatmap = heatmap.cuda()
+        vecmap = vecmap.cuda()
         # print(inputs.shape)
         # print(len(targets), print(targets[-1].shape))
         vec_pred, heat_pred = model(inputs, mask)
@@ -78,7 +80,7 @@ def train_once(model, train_loader, optimizer, criterion, epoch, log):
         log.add_scalar('loss_epoch_{0}'.format(epoch), loss.item(), i)
         log.flush()
         if i % cfg.print_freq == 0:
-            print('epoch: ', epoch, '{0}/{1} loss_avg: {2} global_loss: {3} refine_loss: {4} loss: {5}'.format(i, len(train_loader), losses.avg, vec_loss, heat_loss, loss))
+            print('epoch: ', epoch, '{0}/{1} loss_avg: {2} vec_loss: {3} heat_loss: {4} loss: {5}'.format(i, len(train_loader), losses.avg, vec_loss, heat_loss, loss))
     return losses.avg
 
 

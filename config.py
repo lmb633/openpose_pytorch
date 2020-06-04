@@ -11,7 +11,7 @@ class Config:
     lr_dec_epoch = list(range(6, 40, 6))
 
     num_point = 19
-    num_vector = 6
+    num_vector = 19
     num_stages = 6
     stride = 8
     bn = False
