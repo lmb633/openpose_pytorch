@@ -308,9 +308,11 @@ def crop(img, mask, kpt, center, offset_left, offset_up, w, h):
     if offset_up + h > height:
         ed_y = height - offset_up
         or_ed_y = height
-
-    new_img[st_y: ed_y, st_x: ed_x, :] = img[or_st_y: or_ed_y, or_st_x: or_ed_x, :].copy()
-    new_mask[st_y: ed_y, st_x: ed_x] = mask[or_st_y: or_ed_y, or_st_x: or_ed_x].copy()
+    try:
+        new_img[st_y: ed_y, st_x: ed_x, :] = img[or_st_y: or_ed_y, or_st_x: or_ed_x, :].copy()
+        new_mask[st_y: ed_y, st_x: ed_x] = mask[or_st_y: or_ed_y, or_st_x: or_ed_x].copy()
+    except:
+        print('crop exception')
 
     return np.ascontiguousarray(new_img), np.ascontiguousarray(new_mask), kpt, center
 

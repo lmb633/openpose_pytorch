@@ -272,4 +272,14 @@ def vis_mask():
 
 
 if __name__ == '__main__':
-    vis()
+    # vis()
+    from torch.utils.data import DataLoader
+
+    coco = CocoFolder(file_dir, 8, mytransforms.Compose([mytransforms.RandomResized(),
+                                                         mytransforms.RandomRotate(40),
+                                                         mytransforms.RandomCrop(368),
+                                                         mytransforms.RandomHorizontalFlip(),
+                                                         ]))
+    train_loader = DataLoader(coco, batch_size=1, shuffle=True)
+    for i, (inputs, heatmap, vecmap, mask) in enumerate(train_loader):
+        print(i)
