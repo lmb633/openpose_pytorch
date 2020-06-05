@@ -4,7 +4,7 @@ class Config:
     weight_decay = 1e-5
     mon = 0.0
     epoch = 1000
-    print_freq = 100
+    print_freq = 10
 
     lr = 5e-4
     lr_gamma = 0.5
