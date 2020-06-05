@@ -30,7 +30,7 @@ stickwidth = 4
 
 def construct_model(args):
     model = models.get_model(num_point=19, num_vector=19)
-    state_dict = torch.load(args.model)['state_dict']
+    state_dict = torch.load(args.model, map_location='cpu')['state_dict']
     from collections import OrderedDict
     new_state_dict = OrderedDict()
     for k, v in state_dict.items():
@@ -39,7 +39,7 @@ def construct_model(args):
     state_dict = model.state_dict()
     state_dict.update(new_state_dict)
     model.load_state_dict(state_dict)
-    model = model.cuda()
+    model = model
     model.eval()
 
     return model
@@ -95,14 +95,15 @@ def process(model, input_path):
         imgToTest_padded, pad = padRightDownCorner(imgToTest, stride, padValue)
 
         input_img = np.transpose(imgToTest_padded[:, :, :, np.newaxis], (3, 2, 0, 1))  # required shape (1, c, h, w)
-        mask = np.ones((1, 1, input_img.shape[2] / stride, input_img.shape[3] / stride), dtype=np.float32)
+        mask = np.ones((1, 1, input_img.shape[2] // stride, input_img.shape[3] // stride), dtype=np.float32)
 
-        input_var = torch.autograd.Variable(torch.from_numpy(input_img).cuda())
-        mask_var = torch.autograd.Variable(torch.from_numpy(mask).cuda())
+        input_var = torch.autograd.Variable(torch.from_numpy(input_img))
+        mask_var = torch.autograd.Variable(torch.from_numpy(mask))
 
         # get the features
-        vec1, heat1, vec2, heat2, vec3, heat3, vec4, heat4, vec5, heat5, vec6, heat6 = model(input_var, mask_var)
-
+        vec, heat = model(input_var, mask_var)
+        vec6 = vec[-1]
+        heat6 = heat[-1]
         # get the heatmap
         heatmap = heat6.data.cpu().numpy()
         heatmap = np.transpose(np.squeeze(heatmap), (1, 2, 0))  # (h, w, c)
