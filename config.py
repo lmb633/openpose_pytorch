@@ -1,12 +1,12 @@
 class Config:
     checkpoint = 'BEST_checkpoint.tar'
     batch_size = 64
-    weight_decay = 1e-5
-    mon = 0.0
+    weight_decay = 5e-4
+    mon = 0.9
     epoch = 1000
     print_freq = 10
 
-    lr = 5e-4
+    lr = 4e-5
     lr_gamma = 0.5
     lr_dec_epoch = list(range(6, 40, 6))
 
