@@ -221,14 +221,17 @@ def vis():
     for j in range(19):
         print(j)
         heatmap = heatmaps[:, :, j]
+        for line in heatmap:
+            print(line)
         heatmap = heatmap.reshape((368, 368))
         heatmap *= 255
         heatmap /= 255
-        # result = heatmap * 0.4 + img * 0.5
-        # plt.imshow(image)
-        # plt.imshow(heatmap, alpha=0.5)
-        # plt.show()
-        # plt.close()
+        result =  np.expand_dims(heatmap,2).repeat(3,axis=2) * 0.5
+        plt.imshow(image)
+        plt.imshow(heatmap, alpha=0.5)
+        plt.show()
+        plt.imsave('img{0}.jpg'.format(j),result)
+        plt.close()
     print(vecmap.shape)
     vecs = vecmap.numpy()
     vecs = vecs.transpose(1, 2, 0)
@@ -272,14 +275,4 @@ def vis_mask():
 
 
 if __name__ == '__main__':
-    # vis()
-    from torch.utils.data import DataLoader
-
-    coco = CocoFolder(file_dir, 8, mytransforms.Compose([mytransforms.RandomResized(),
-                                                         mytransforms.RandomRotate(40),
-                                                         mytransforms.RandomCrop(368),
-                                                         mytransforms.RandomHorizontalFlip(),
-                                                         ]))
-    train_loader = DataLoader(coco, batch_size=1, shuffle=True)
-    for i, (inputs, heatmap, vecmap, mask) in enumerate(train_loader):
-        print(i)
+    vis()

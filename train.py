@@ -10,11 +10,12 @@ from utils import AverageMeter
 from utils import adjust_learning_rate
 from config import cfg
 
+checkpoint_path = cfg.checkpoint
+
 
 def train():
     torch.manual_seed(2)
     np.random.seed(2)
-    checkpoint_path = cfg.checkpoint
     start_epoch = 0
     best_loss = float('inf')
     epoch_since_improvement = 0
@@ -23,12 +24,14 @@ def train():
     train_loader = DataLoader(dataset, batch_size=cfg.batch_size, shuffle=True)
     model = get_model(cfg.num_point, cfg.num_vector, cfg.num_stages, cfg.bn, cfg.pretrained)
     model = torch.nn.DataParallel(model).cuda()
+    optimizer = torch.optim.SGD(model.parameters(), lr=cfg.lr, momentum=cfg.mon, weight_decay=cfg.weight_decay)
     if os.path.exists(checkpoint_path):
         print('=========load checkpoint========')
         checkpoint = torch.load(checkpoint_path)
+        print(checkpoint['state_dict'])
         model.load_state_dict(checkpoint['state_dict'])
         start_epoch = checkpoint['epoch']
-    optimizer = torch.optim.SGD(model.parameters(), lr=cfg.lr, momentum=cfg.mon, weight_decay=cfg.weight_decay)
+        optimizer = checkpoint['optm']
     criterion1 = torch.nn.MSELoss().cuda()
 
     log = SummaryWriter(log_dir='data/log', comment='openpose')
@@ -80,6 +83,12 @@ def train_once(model, train_loader, optimizer, criterion, epoch, log):
         log.add_scalar('loss_epoch_{0}'.format(epoch), loss.item(), i)
         log.flush()
         if i % cfg.print_freq == 0:
+            print('save checkpoint')
+            torch.save({
+                'epoch': epoch + 1,
+                'state_dict': model.state_dict(),
+                'optm': optimizer,
+            }, checkpoint_path)
             print('epoch: ', epoch, '{0}/{1} loss_avg: {2} vec_loss: {3} heat_loss: {4} loss: {5}'.format(i, len(train_loader), losses.avg, vec_loss, heat_loss, loss))
     return losses.avg
 

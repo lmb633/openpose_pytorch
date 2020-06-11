@@ -119,10 +119,11 @@ def process(model, input_path):
         paf = paf[:imgToTest_padded.shape[0] - pad[2], :imgToTest_padded.shape[1] - pad[3], :]
         paf = cv2.resize(paf, (width, height), interpolation=cv2.INTER_CUBIC)
         paf_avg = paf_avg + paf / len(multiplier)
+    print(heatmap_avg.shape)
+    print(paf_avg.shape)
 
     all_peaks = []  # all of the possible points by classes.
     peak_counter = 0
-
     for part in range(1, 19):
         map_ori = heatmap_avg[:, :, part]
         map = gaussian_filter(map_ori, sigma=3)
@@ -300,8 +301,8 @@ def process(model, input_path):
 if __name__ == '__main__':
     os.environ['CUDA_VISIBLE_DEVICES'] = '3'
     parser = argparse.ArgumentParser()
-    parser.add_argument('--image', type=str, default='data/ski.jpg', help='input image')
-    parser.add_argument('--output', type=str, default='data/result.png', help='output image')
+    parser.add_argument('--image', type=str, default='data/demo/ski.jpg', help='input image')
+    parser.add_argument('--output', type=str, default='data/demo/result.png', help='output image')
     parser.add_argument('--model', type=str, default='BEST_checkpoint.tar', help='path to the weights file')
 
     args = parser.parse_args()

@@ -78,7 +78,7 @@ def get_model(num_point=19, num_vector=19, num_stages=6, bn=False, pretrained=Fa
         blocks = [[], []]
         for i in range(1, 8):
             if i < 6:
-                blocks[0].append({'stage{}conv{}__vec'.format(j, i): [in_vec_1[i], in_vec_1[i + 1], 7, 1, 3]})
+                blocks[0].append({'stage{}conv{}_vec'.format(j, i): [in_vec_1[i], in_vec_1[i + 1], 7, 1, 3]})
                 blocks[1].append({'stage{}conv{}_heat'.format(j, i): [in_heat_1[i], in_heat_1[i + 1], 7, 1, 3]})
             else:
                 blocks[0].append({'stage{}conv{}_vec'.format(j, i): [in_vec_1[i], in_vec_1[i + 1], 1, 1, 0]})
@@ -88,6 +88,7 @@ def get_model(num_point=19, num_vector=19, num_stages=6, bn=False, pretrained=Fa
     model_dict = model.state_dict()
 
     if pretrained:
+        print('use pretrained')
         parameter_num = 10
         if bn:
             vgg19 = models.vgg19_bn(pretrained=True)
@@ -105,10 +106,20 @@ def get_model(num_point=19, num_vector=19, num_stages=6, bn=False, pretrained=Fa
 
 
 if __name__ == '__main__':
-    model = get_model(bn=True, pretrained=True)
+    model = get_model(bn=False, pretrained=False)
+    i = 0
+    for k, v in model.state_dict().items():
+        print(i, k, v.shape)
+        i += 1
     x = torch.zeros((1, 3, 64, 64))
     mask = torch.zeros((1, 1, 8, 8))
-    out1,out2 = model(x, mask)
-    print(len(out1),len(out2))
+    out1, out2 = model(x, mask)
+    print(len(out1), len(out2))
     print(out1[0].shape)
     print(out2[0].shape)
+
+    checkpoint = torch.load('BEST_checkpoint.tar', map_location='cpu')
+    i = 0
+    for k, v in checkpoint['state_dict'].items():
+        print(i, k, v.shape)
+        i += 1
